@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/Adi/Documents/audio-engine/build",
+  "command": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.exe -IC:/Users/Adi/Documents/audio-engine/./src -isystem C:/Users/Adi/Documents/audio-engine/vcpkg/installed/x64-windows/include -g -std=gnu++17 -o CMakeFiles\\main.dir\\src\\main.cpp.obj -c C:\\Users\\Adi\\Documents\\audio-engine\\src\\main.cpp",
+  "file": "C:/Users/Adi/Documents/audio-engine/src/main.cpp",
+  "output": "C:/Users/Adi/Documents/audio-engine/build/CMakeFiles/main.dir/src/main.cpp.obj"
+}
+]

@@ -1,0 +1,10 @@
+^C:\USERS\ADI\DOCUMENTS\AUDIO-ENGINE\BUILD\CMAKEFILES\733484969CF40D0A12E9423AF6E08011\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Adi/Documents/audio-engine -BC:/Users/Adi/Documents/audio-engine/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Adi/Documents/audio-engine/build/audio-engine.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
