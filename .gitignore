@@ -17,3 +17,6 @@ input.wav
 
 # vcpkg
 vcpkg/
+
+# cache
+.cache/
