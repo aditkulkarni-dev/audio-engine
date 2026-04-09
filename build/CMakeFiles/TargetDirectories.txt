@@ -1,3 +1,0 @@
-C:/Users/Adi/Documents/audio-engine/build/CMakeFiles/main.dir
-C:/Users/Adi/Documents/audio-engine/build/CMakeFiles/edit_cache.dir
-C:/Users/Adi/Documents/audio-engine/build/CMakeFiles/rebuild_cache.dir
