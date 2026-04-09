@@ -1,5 +1,5 @@
 #include "Gain.h"
-#include "AudioBuffer.h"
+#include "../audio/AudioBuffer.h"
 
 Gain::Gain(float gainAmount) : gain(gainAmount) {}
 

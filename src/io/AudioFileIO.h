@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "AudioBuffer.h"
+#include "../audio/AudioBuffer.h"
 
 class AudioFileIO{
 

@@ -1,5 +1,5 @@
-#include "./Effect.h"
-#include "./AudioBuffer.h"
+#include "Effect.h"
+#include "../audio/AudioBuffer.h"
 
 class Gain : public Effect{
 public:

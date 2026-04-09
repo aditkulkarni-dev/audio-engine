@@ -1,5 +1,5 @@
 #pragma once
-#include "AudioBuffer.h"
+#include "../audio/AudioBuffer.h"
 
 class Effect{
 public:

@@ -1,11 +1,11 @@
 #include <iostream>
 #include <memory>
-#include "AudioBuffer.h"
-#include "AudioFileIO.h"
-#include "BlockUtils.h"
-#include "Effect.h"
-#include "EffectChain.h"
-#include "./Effects/Gain.h"
+#include "../audio/AudioBuffer.h"
+#include "../io/AudioFileIO.h"
+#include "../audio/BlockUtils.h"
+#include "../effects/Effect.h"
+#include "../effects/EffectChain.h"
+#include "../effects/Gain.h"
 
 int main(){
     AudioFileIO fileIo;

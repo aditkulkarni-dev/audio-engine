@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include "AudioBuffer.h"
+#include "../audio/AudioBuffer.h"
 #include "Effect.h"
 
 class EffectChain{

@@ -1,5 +1,5 @@
 #include "EffectChain.h"
-#include "AudioBuffer.h"
+#include "../audio/AudioBuffer.h"
 #include <memory>
 
 void EffectChain::addEffect(std::unique_ptr<Effect> effectToAdd){

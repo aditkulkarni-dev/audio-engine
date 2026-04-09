@@ -1,5 +1,5 @@
 #include "AudioFileIO.h"
-#include "AudioBuffer.h"
+#include "../audio/AudioBuffer.h"
 #include <sndfile.h>
 #include <stdexcept>
 
