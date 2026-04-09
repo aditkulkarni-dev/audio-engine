@@ -9,7 +9,7 @@
 
 int main(){
     AudioFileIO fileIo;
-    AudioClip clip = fileIo.readWav("../input.wav");
+    AudioClip clip = fileIo.readWav("./input.wav");
 
     std::cout << "Loaded file\n";
     std::cout << "Sample rate: " << clip.sampleRate << "\n";
@@ -21,7 +21,7 @@ int main(){
     
     EffectChain chain;
     // add effects to the chain
-    std::unique_ptr<Effect> gain = std::make_unique<Gain>(0.5f);
+    std::unique_ptr<Effect> gain = std::make_unique<Gain>(0.3f);
 
     chain.addEffect(std::move(gain));
 
