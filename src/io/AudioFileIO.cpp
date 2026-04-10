@@ -14,6 +14,7 @@ AudioClip AudioFileIO::readWav(const std::string& filePath) {
     buffer.numChannels = info.channels;
     buffer.numFrames = info.frames;
 
+
     buffer.samples.resize(buffer.numFrames * buffer.numChannels);
 
     sf_readf_float(file, buffer.samples.data(), buffer.numFrames);
