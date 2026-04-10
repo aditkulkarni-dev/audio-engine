@@ -3,9 +3,8 @@
 #include "../audio/AudioBuffer.h"
 #include "../io/AudioFileIO.h"
 #include "../audio/BlockUtils.h"
-#include "../effects/Effect.h"
-#include "../effects/EffectChain.h"
 #include "../effects/Gain.h"
+#include "../audio/AudioProcessor.h"
 
 int main(){
     AudioFileIO fileIo;
@@ -19,16 +18,11 @@ int main(){
     constexpr size_t blockSize = 512;
     auto blocks = splitIntoBlocks(clip, blockSize);
     
-    EffectChain chain;
-    // add effects to the chain
-    std::unique_ptr<Effect> gain = std::make_unique<Gain>(0.3f);
-
-    chain.addEffect(std::move(gain));
-
-    
+    AudioProcessor processor;
+    processor.addEffect(std::make_unique<Gain>(0.4f));
 
     for (auto& block : blocks){
-        chain.process(block);
+        processor.processBlock(block);
     }
 
     auto finalClip = mergeBlocks(blocks);
