@@ -31,4 +31,5 @@ int main(){
     fileIo.writeWav("./output.wav", finalClip);
 
     std::cout << "Wrote output.wav\n";
+    return 0;
 }
