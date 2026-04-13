@@ -47,7 +47,7 @@ add_executable(AudioTests ./src/tests/GainTest.cpp
                         ./src/tests/BlockUtilsTest.cpp
                         ./src/tests/CircularBufferTest.cpp
                         # .src/tests/EffectChainTest.cpp
-                        # ./src/tests/DelayTest.cpp 
+                        ./src/tests/ffDelayTest.cpp 
                         # ./src/tests/AudioFileIOTest.cpp
 )               
 
