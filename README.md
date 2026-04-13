@@ -45,6 +45,7 @@ Here is the life cycle of an audio signal moving through the engine:
  │  output.wav  │ ◄── │ AudioFileIO  │ ◄── │ AudioClip    │ (Processed Stereo)
  └──────────────┘     └──────────────┘     └──────────────┘
 ```
+![Flow](https://github.com/AdityaKulkarni2706/audio-engine/blob/main/audio-engine.drawio.png)
 ## Level 2: The Engine (Class Architecture)
 
 The engine is designed to use strict object-oriented principles. The DSP logic is decoupled from file I/O and memory management, allowing effects to be easily swapped, chained, and tested.
