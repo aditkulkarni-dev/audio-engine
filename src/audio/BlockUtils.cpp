@@ -3,8 +3,8 @@
 #include "AudioBuffer.h"
 #include "BlockUtils.h"
 
-std::vector<AudioBlock> splitIntoBlocks(const AudioClip& clip, size_t blockSize) {
-    std::vector<AudioBlock> blocks;
+std::vector<AudioBuffer> splitIntoBlocks(const AudioBuffer& clip, size_t blockSize) {
+    std::vector<AudioBuffer> blocks;
 
     size_t totalFrames = clip.numFrames;
     size_t channels = static_cast<size_t>(clip.numChannels);
@@ -12,7 +12,7 @@ std::vector<AudioBlock> splitIntoBlocks(const AudioClip& clip, size_t blockSize)
     for (size_t startFrame = 0; startFrame < totalFrames; startFrame += blockSize) {
         size_t framesThisBlock = std::min(blockSize, totalFrames - startFrame);
 
-        AudioBlock block;
+        AudioBuffer block;
         block.sampleRate = clip.sampleRate;
         block.numChannels = clip.numChannels;
         block.numFrames = framesThisBlock;
@@ -33,8 +33,8 @@ std::vector<AudioBlock> splitIntoBlocks(const AudioClip& clip, size_t blockSize)
     return blocks;
 }
 
-AudioClip mergeBlocks(const std::vector<AudioBlock>& blocks) {
-    AudioClip clip;
+AudioBuffer mergeBlocks(const std::vector<AudioBuffer>& blocks) {
+    AudioBuffer clip;
 
     if (blocks.empty()) return clip;
 
@@ -64,15 +64,15 @@ AudioClip mergeBlocks(const std::vector<AudioBlock>& blocks) {
     return clip;
 }
 
-std::vector<AudioClip> deinterleave(const AudioClip &clip){
+std::vector<AudioBuffer> deinterleave(const AudioBuffer &clip){
     
     if (clip.samples.size() != clip.numFrames * clip.numChannels) {
-    throw std::runtime_error("Invalid AudioClip: sample count does not match frames * channels");
+    throw std::runtime_error("Invalid AudioBuffer: sample count does not match frames * channels");
     }
 
     int channels = clip.numChannels;
     int frames = clip.numFrames;
-    std::vector<AudioClip> clips(channels);
+    std::vector<AudioBuffer> clips(channels);
     /*
         For 2 channel,
         clip = [C01 C11 C02 C12 C03 C13 ...C0N C1N]
@@ -99,9 +99,9 @@ std::vector<AudioClip> deinterleave(const AudioClip &clip){
     return clips;
 }
 
-AudioClip interleave(const std::vector<AudioClip>& clips) {
+AudioBuffer interleave(const std::vector<AudioBuffer>& clips) {
     if (clips.empty()) {
-        return AudioClip{};
+        return AudioBuffer{};
     }
 
     int numChannels = static_cast<int>(clips.size());
@@ -124,7 +124,7 @@ AudioClip interleave(const std::vector<AudioClip>& clips) {
         }
     }
 
-    AudioClip out;
+    AudioBuffer out;
     out.numChannels = numChannels;
     out.numFrames = numFrames;
     out.sampleRate = sampleRate;

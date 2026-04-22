@@ -3,7 +3,7 @@
 
 Gain::Gain(float gainAmount) : gain(gainAmount) {}
 
-void Gain::process(AudioBlock& buffer){
+void Gain::process(AudioBuffer& buffer){
     for (auto& sample : buffer.samples){
         sample *= gain;
     }

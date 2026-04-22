@@ -6,7 +6,7 @@ public:
     Gain() = default;
     explicit Gain(float gainAmount);
 
-    void process(AudioBlock& buffer) override;
+    void process(AudioBuffer& buffer) override;
 
     void setGain(float newGain);
     float getGain() const;

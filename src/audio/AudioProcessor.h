@@ -5,7 +5,7 @@
 class AudioProcessor {
 public:
     AudioProcessor() = default;
-    void processBlock(AudioBlock& buffer);
+    void processBlock(AudioBuffer& buffer);
     void addEffect(std::unique_ptr<Effect> effect);
 
 private:

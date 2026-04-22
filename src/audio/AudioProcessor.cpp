@@ -1,6 +1,6 @@
 #include "AudioProcessor.h"
 
-void AudioProcessor::processBlock(AudioBlock& buffer){
+void AudioProcessor::processBlock(AudioBuffer& buffer){
     effectChain.process(buffer);
 }
 

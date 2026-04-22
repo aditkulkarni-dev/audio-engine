@@ -8,7 +8,7 @@ public:
     ffDelay(int delay, float mix, int bufferSize=256) : delay(delay), mix(mix){
         buffer.setSize(bufferSize);
     }
-    void process(AudioBlock& Buffer) override;
+    void process(AudioBuffer& Buffer) override;
     void setBufferSize(int bufferSize);
 
 private:

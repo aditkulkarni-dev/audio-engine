@@ -11,7 +11,7 @@
 
 int main() {
     AudioFileIO fileIo;
-    AudioClip clip = fileIo.readWav("./input.wav");
+    AudioBuffer clip = fileIo.readWav("./input.wav");
 
     const int channels = clip.numChannels;
     constexpr size_t blockSize = 512;
@@ -20,16 +20,15 @@ int main() {
     std::cout << "Number of channels: " << clip.numChannels << "\n";
     std::cout << "Number of frames: " << clip.numFrames << "\n";
     std::cout << "Sample rate: " << clip.sampleRate << "\n";
-    std::cout << "Initial 10 samples:\n";
-    clip.displaySamples(10);
+
 
     // Deinterleave into mono channel clips
-    std::vector<AudioClip> clips = deinterleave(clip);
+    std::vector<AudioBuffer> clips = deinterleave(clip);
     std::cout << "Shape of clips: (" << clips.size() << ", "
               << clips[0].samples.size() << ")\n";
 
     // Split each channel clip into blocks
-    std::vector<std::vector<AudioBlock>> blocks;
+    std::vector<std::vector<AudioBuffer>> blocks;
     blocks.reserve(channels);
 
     for (int channel = 0; channel < channels; ++channel) {
@@ -51,7 +50,7 @@ int main() {
     }
 
     // Merge blocks back into one clip per channel
-    std::vector<AudioClip> finalClips;
+    std::vector<AudioBuffer> finalClips;
     finalClips.reserve(channels);
 
     for (int channel = 0; channel < channels; ++channel) {
@@ -59,10 +58,9 @@ int main() {
     }
 
     std::cout << "Final 10 samples of channel 0:\n";
-    finalClips[0].displaySamples(10);
 
     // Interleave channels back into a single output clip
-    AudioClip finalClip = interleave(finalClips);
+    AudioBuffer finalClip = interleave(finalClips);
     fileIo.writeWav("./output.wav", finalClip);
 
     std::cout << "Wrote output.wav\n";

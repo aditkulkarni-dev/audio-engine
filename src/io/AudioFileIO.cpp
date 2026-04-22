@@ -3,13 +3,13 @@
 #include <sndfile.h>
 #include <stdexcept>
 
-AudioClip AudioFileIO::readWav(const std::string& filePath) {
+AudioBuffer AudioFileIO::readWav(const std::string& filePath) {
     SF_INFO info{};
     SNDFILE* file = sf_open(filePath.c_str(), SFM_READ, &info);
 
     if (!file) throw std::runtime_error("Failed to open file");
 
-    AudioClip buffer;
+    AudioBuffer buffer;
     buffer.sampleRate = info.samplerate;
     buffer.numChannels = info.channels;
     buffer.numFrames = info.frames;
@@ -23,7 +23,7 @@ AudioClip AudioFileIO::readWav(const std::string& filePath) {
     return buffer;
 }
 
-void AudioFileIO::writeWav(const std::string& filePath, const AudioClip& buffer) {
+void AudioFileIO::writeWav(const std::string& filePath, const AudioBuffer& buffer) {
     SF_INFO info{};
     info.samplerate = buffer.sampleRate;
     info.channels = buffer.numChannels;

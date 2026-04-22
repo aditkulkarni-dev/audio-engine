@@ -5,7 +5,7 @@ void ffDelay::setBufferSize(int bufferSize){
     buffer.setSize(bufferSize);
 }
 
-void ffDelay::process(AudioBlock& Buffer){
+void ffDelay::process(AudioBuffer& Buffer){
     
     
     for (auto& sample : Buffer.samples){
