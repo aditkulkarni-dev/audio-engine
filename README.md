@@ -1,77 +1,70 @@
-## C++ Audio Processing Engine
+# C++ Audio Processing Engine
 
-A real-time-capable digital audio processing engine written in modern C++ (C++17). This project implements a modular architecture for reading, manipulating, and writing audio files using custom digital signal processing (DSP) algorithms.
+A C++17 offline audio processing engine for rapidly prototyping digital signal processing (DSP) effects before moving them into a full plugin framework such as JUCE.
+
+This project is designed as a lightweight development environment for audio developers. Instead of writing an effect inside a plugin, exporting a VST3, loading it into a DAW, testing it, and repeating that loop, this engine allows effects to be tested directly on audio files through a simple C++ API.
+
+The current version, **v1.1**, introduces a higher-level `AudioEngine` interface, a unified `AudioBuffer` data structure, and a modular `EffectChain` system for adding and testing DSP effects.
 
 ---
 
-## Level 1: The Bird's Eye View (High-Level Flow)
+## Current Version: v1.1
 
-At its highest level of abstraction, this engine acts as an automated studio pipeline. It ingests raw audio, breaks it down into manageable components, routes it through an effects processor, and reconstructs the final track.
-
-Here is the life cycle of an audio signal moving through the engine:
-![Flow](https://github.com/AdityaKulkarni2706/audio-engine/blob/main/audio-engine.drawio.png)
-## Level 2: The Engine (Class Architecture)
-
-The engine is designed to use strict object-oriented principles. The DSP logic is decoupled from file I/O and memory management, allowing effects to be easily swapped, chained, and tested.
-
-Core Data Structures:
-1) AudioClip: Represents an entire audio file in memory. Contains raw floating-point samples, sample rate, and channel metadata.
-
-2) AudioBlock: Represents a small, fixed-size chunk of an AudioClip (e.g., 512 samples). Processing audio in blocks mimics real-time hardware constraints and optimizes CPU cache usage.
-
-Routing and Utility:
-1) interleave: combines audio data of multiple channels into a singular array for writing.
-2) deinterleave: splits interleaved audio data into a vector of multiple audio clips representing their own channels.
-3) splitIntoBlocks: breaks an audio clip into a vector of blocks of fixed length called as buffer length. 
-4) mergeBlocks: merges a vector of audio blocks into a singular audio clip.
-   
-Padding is taken care of for 3 and 4.
-
-## The DSP Architecture
+The original version of this project validated the low-level audio pipeline manually:
 ```
-+-----------------------+        +-----------------------+
-|    AudioProcessor     |        |      EffectChain      |
-|-----------------------|        |-----------------------|
-| - effectChain         |------->| - std::vector<Effect> |
-| + processBlock(block) |        | + process(block)      |
-| + addEffect(effect)   |        | + addEffect(effect)   |
-+-----------|-----------+        +-----------|-----------+
-            |                                |
-            | modifies                       | contains
-            v                                v
-+-----------------------+        +-----------------------+
-|      AudioBlock       |<=======|   Effect (Base Class) |
-|-----------------------| alters |-----------------------|
-| - vector<float>       |        | + process(block) = 0  |
-| - numFrames           |        +-----------|-----------+
-+-----------------------+                   / \ inherits
-                                           /   \
-                 +------------------------+     +------------------------+
-                 |          Gain          |     |        ffDelay         |
-                 |------------------------|     |------------------------|
-                 | - gainAmount           |     | - CircularBuffer       |
-                 | + process(block)       |     | - delayTime, feedback  |
-                 +------------------------+     +------------|-----------+
-                                                             | uses
-                                                             v
-                                                +------------------------+
-                                                |     CircularBuffer     |
-                                                |------------------------|
-                                                | + write(sample)        |
-                                                | + read(delayAmount)    |
-                                                +------------------------+
+read WAV → deinterleave → split into blocks → process → merge → interleave → write WAV
 ```
-## Level 3: Unit Testing
+Version 1.1 wraps that workflow inside the `AudioEngine` class so that the audio developers can focus on writing and testing effects instead of manually managing the full processing pipeline.
 
-This engine is unit-tested using Google Test (GTest). The build system separates the execution environment from the testing environment to isolate logic. (Refer to the CMakeLists.txt for more info)
+A typical usage now looks like this:
+```
+#include "audio/AudioEngine.h"
+#include "effects/Gain.h"
+#include "effects/ffDelay.h"
 
-Test Suites Included:
-1) BlockUtilsTest: Verifies that memory slicing, array padding, and phase alignment remain intact when translating between AudioClip and AudioBlock states.
+int main() {
+    AudioEngine engine("./input.wav", "./output.wav");
 
-2) CircularBufferTest: Tests memory bounds, index wrapping, and zero-initialization to ensure time-based effects never trigger segmentation faults or read garbage data.
+    // Add effects here
+    engine.addEffect(std::make_unique<Gain>(1.0f));
+    engine.addEffect(std::make_unique<ffDelay>(15000, 1.0f, 44100));
 
-3) GainTest: Validates basic floating-point arithmetic, volume scaling, and phase inversion (negative gain).
+    engine.run();
 
-4) DelayTest: Ensures feedforward echoes occur at the exact required sample index and carry over between blocks without clicking.
+    return 0;
+}
+```
 
-5) EffectChainTest: Validates polymorphic behavior, ensuring audio passes through multiple stacked pointers in the correct chronological sequence.
+## High-Level Flow:
+At a high level, the engine performs the following steps:
+1) Input .wav file
+2) AudioFileIO reads audio into an AudioBuffer
+3) AudioEngine deinterleaves the audio into independent channel buffers
+4) Each channel is split into processing blocks
+5) Processed blocks are merged back into full channel buffers
+6) Channels are interleaved back into a final AudioBuffer
+7) AudioFileIO writes the output .wav file
+
+The engine is currently an offline block-based processing system. It is inspired by real-time audio engine design because it processes audio in blocks, but its current purpose is offline DSP prototyping.
+
+## Core Architecture:
+1) `AudioEngine`:
+   `AudioEngine` is the main entry point for the project, and owns the entire high-level flow.
+   That keeps the user-facing code very simple as shown above.
+2) `AudioBuffer`:
+   `AudioBuffer` is the central audio data structure in v1.1. It represents audio data in memory and stores samples, sample rate, number of channels and frames.
+   v1.0 used separate `AudioClip` and `AudioBlock` abstractions. In v1.1, these have been replaced by `AudioBuffer` to simplify the data model and generalize audio data structures.
+
+   Now, an `AudioBuffer` can represent a full audio file, a single channel of audio and a smaller processing block.
+3) `AudioFileIO`:
+   `AudioFileIO` handles .wav file reading using `libsndfile`.
+   Its responsibility is limited to file I/O.
+4) `BlockUtils`:
+   `BlockUtils` contain utility functions for transforming audio buffers during processing.
+   Important utils include:
+   1) deinterleaving audio into separate mono channel buffers
+   2) interleaving separate mono channel buffers into a single interleaved multi-channel AudioBuffer
+   3) splitting an AudioBuffer into into smaller buffers (batches) for block-based processing
+   4) merging small buffers of audio (batches) into a single AudioBuffer
+   These functions allow the engine to mimic the structure of real-time audio processing while still operating offline.
+
