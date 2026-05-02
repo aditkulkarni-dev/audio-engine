@@ -198,9 +198,23 @@ audio-engine/
 ├── CMakeLists.txt
 └── README.md
 ```
-## Build Instructions:
-I am yet to figure this part out. This will be part of v1.2
+## Build Instructions (Linux Only):
+Note: This build is designed for Linux. To make it work on Windows, one would have to set up vcpkg and install the dependencies that way and modify the CMakeLists.txt respectively.
 
+Building this project is straightforward. You will need to install `libsndfile` for audio file I/O, and then compile the project using CMake.
+
+1) Install Dependencies:
+   ```
+   sudo apt update
+   sudo apt install libsndfile1-dev
+   ```
+2) Build with CMake:
+   ```
+   mkdir build && cd build
+   cmake ..
+   make
+   ```
+       
 ## Optional Unit Tests:
 These will also be a part of v1.2 which will test the AudioEngine out directly. The individual components have already been tested in v1.0
 
