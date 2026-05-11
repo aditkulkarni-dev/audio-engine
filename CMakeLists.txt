@@ -10,6 +10,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile)
 
+include(FetchContent)
+FetchContent_Declare(
+    kissfft
+    GIT_REPOSITORY https://github.com/mborgerding/kissfft.git
+    GIT_TAG master
+)
+set(KISSFFT_DATATYPE float CACHE STRING "" FORCE)
+set(KISSFFT_TOOLS OFF CACHE BOOL "" FORCE)
+set(KISSFFT_TEST OFF CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(kissfft)
+
 # 2. Audio Engine Library
 add_library(AudioEngineLib STATIC
     ./src/audio/AudioEngine.cpp
@@ -20,13 +32,14 @@ add_library(AudioEngineLib STATIC
     ./src/audio/BlockUtils.cpp
     ./src/effects/Gain.cpp
     ./src/effects/EffectChain.cpp
+    ./src/effects/STFTProcessor.cpp
 )
 
 # Tell the library where its own headers are
 target_include_directories(AudioEngineLib PUBLIC ./src)
 
 # Link the library to sndfile
-target_link_libraries(AudioEngineLib PUBLIC PkgConfig::SNDFILE)
+target_link_libraries(AudioEngineLib PUBLIC PkgConfig::SNDFILE kissfft)
 
 # 3. Main executable
 add_executable(mainApp ./src/app/main_engine.cpp)
