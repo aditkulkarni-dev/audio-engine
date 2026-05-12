@@ -32,4 +32,16 @@ STFTProcessor::~STFTProcessor(){
     kiss_fft_free(m_inverseConfig);
 }
 
+//PROCESS
+void STFTProcessor::process(AudioBuffer& buffer){
+    // write input buffer samples onto the input Queue
+    for(float sample : buffer.samples){
+        m_inputQueue.write(sample);
+    }
+
+    while(m_inputQueue.getSize() >= )
+
+
+}
+
 

@@ -14,9 +14,15 @@ void CircularBuffer::setSize(int size){
     if (size <= 0) {
         throw std::invalid_argument("Buffer size must be greater than 0");
     }
+    this->size = size;
     buffer.resize(size);
     std::fill(buffer.begin(), buffer.end(), 0.0f);
     reset();
+}
+
+int CircularBuffer::getSize() const
+{
+    return size;
 }
 
 void CircularBuffer::write(float sample){
