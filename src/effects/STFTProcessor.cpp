@@ -4,7 +4,7 @@
 // CONSTRUCTOR
 
 STFTProcessor::STFTProcessor(int fftSize, int hopSize):
-m_fftSize(fftSize), m_hopSize(m_hopSize)
+m_fftSize(fftSize), m_hopSize(hopSize)
 {
     m_timeFrame.resize(m_fftSize, 0.0f);
     m_freqBins.resize(m_fftSize);
@@ -24,6 +24,7 @@ m_fftSize(fftSize), m_hopSize(m_hopSize)
     m_inputQueue.reset();
     m_outputQueue.setSize(8192);
     m_outputQueue.reset();
+    timeDomainCpx.resize(fftSize);
 }
 
 // DESTRUCTOR
@@ -36,11 +37,39 @@ STFTProcessor::~STFTProcessor(){
 void STFTProcessor::process(AudioBuffer& buffer){
     // write input buffer samples onto the input Queue
     for(float sample : buffer.samples){
-        m_inputQueue.write(sample);
+        m_inputQueue.pushSample(sample);
     }
 
-    while(m_inputQueue.getSize() >= )
+    while(m_inputQueue.getAvailableSamples() >= m_fftSize){
+        m_inputQueue.peekSamples(m_timeFrame, m_fftSize);
 
+        
+        for (int i = 0; i < m_fftSize; ++i) {
+            timeDomainCpx[i].r = m_timeFrame[i] * m_window[i]; 
+            timeDomainCpx[i].i = 0.0f;
+        }
+
+        kiss_fft(m_forwardConfig, timeDomainCpx.data(), m_freqBins.data());
+
+        processSpectrum(m_freqBins);
+
+        kiss_fft(m_inverseConfig, m_freqBins.data(), timeDomainCpx.data());
+
+        for (int i = 0; i < m_fftSize; ++i) {
+            m_timeFrame[i] = timeDomainCpx[i].r / (float)m_fftSize;
+            
+            // Standard STFT requires windowing on the way back out too
+            m_timeFrame[i] *= m_window[i]; 
+        }
+
+        m_outputQueue.addSamples(m_timeFrame, m_fftSize);
+        m_outputQueue.advanceWrite(m_hopSize);
+
+        m_inputQueue.advance(m_hopSize);
+
+        
+    }
+    m_outputQueue.popSamples(buffer.samples, buffer.samples.size());
 
 }
 

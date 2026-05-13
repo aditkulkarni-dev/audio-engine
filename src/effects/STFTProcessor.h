@@ -1,6 +1,7 @@
 #pragma once
 #include "Effect.h"
 #include "../dsp/CircularBuffer.h"
+#include "../dsp/Queue.h"
 #include <vector>
 #include "kiss_fft.h"
 
@@ -21,8 +22,8 @@ class STFTProcessor : public Effect {
         int m_fftSize;
         int m_hopSize;
 
-        CircularBuffer m_inputQueue; // input audio samples
-        CircularBuffer m_outputQueue;  // processed audio samples to be output
+        Queue m_inputQueue; // input audio samples
+        Queue m_outputQueue;  // processed audio samples to be output
         std::vector<float> m_window; // hanns window or gaussian
 
         std::vector<float> m_timeFrame; // temporary buffer for t-domain samples
@@ -30,6 +31,7 @@ class STFTProcessor : public Effect {
 
         kiss_fft_cfg m_forwardConfig;
         kiss_fft_cfg m_inverseConfig;
+        std::vector<kiss_fft_cpx> timeDomainCpx;
 
 
         
